@@ -1,0 +1,1 @@
+add_library(neighbor STATIC dummy.cpp)

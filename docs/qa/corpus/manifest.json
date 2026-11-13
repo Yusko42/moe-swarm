@@ -1,0 +1,46 @@
+{
+  "version": "0.1",
+  "intent": "Synthetic test corpus, not data from actual users",
+  "system_for_api_count": "Ты участник контрольного испытания. Используй исключительно данные синтетического протокола.",
+  "critical_note": "Prompt counts are not valid for acceptance until rechecked with exactly the deployed chat template, thinking switch and real assembled request; prompt tokens + 256 <= 8192",
+  "profile_files": [
+    {
+      "file": "dialogue-1k.txt",
+      "profile_target_prompt_tokens": 1000,
+      "generated_records": 18,
+      "actual_prompt_tokens_in_test_template": null,
+      "tokenization_status": "UNCALIBRATED",
+      "sha256": "a130a2dbc0e92515fde2efe081f3622e5c7d1bcb6f65dc4e5252f37c24c9cd8e"
+    },
+    {
+      "file": "dialogue-4k.txt",
+      "profile_target_prompt_tokens": 4000,
+      "generated_records": 73,
+      "actual_prompt_tokens_in_test_template": null,
+      "tokenization_status": "UNCALIBRATED",
+      "sha256": "a9348f3a4b0ad4a32b14c892978780079dffad79af508175f82f1ca1452821c6"
+    },
+    {
+      "file": "dialogue-near-8k.txt",
+      "profile_target_prompt_tokens": 7800,
+      "generated_records": 142,
+      "actual_prompt_tokens_in_test_template": null,
+      "tokenization_status": "UNCALIBRATED",
+      "sha256": "ba14ac04f117f573e50cdd2c77d5b8e18c78b53c6b303718a20955ccacba898d"
+    },
+    {
+      "file": "control-short.txt",
+      "profile_target_prompt_tokens": null,
+      "actual_prompt_tokens_in_test_template": null,
+      "tokenization_status": "UNCALIBRATED",
+      "sha256": "2c1a3e736d7d9257b8464b096cd0c9c13b695f2c20510bb7aa8341eaba82a48d"
+    },
+    {
+      "file": "multiturn.json",
+      "profile_target_prompt_tokens": null,
+      "actual_prompt_tokens_in_test_template": null,
+      "tokenization_status": "UNCALIBRATED",
+      "sha256": "a7a6520cea95a8b74c9314bcac2eb8368798b95df2d7cafc91cd364e4df89876"
+    }
+  ]
+}

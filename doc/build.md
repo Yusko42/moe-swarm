@@ -6,7 +6,7 @@
 В WSL2 выполняйте их внутри Ubuntu; репозиторий лучше разместить в Linux
 файловой системе, например `~/src/moe-swarm`.
 
-Требуются CMake 3.22+, компилятор C++20, Ninja, Python 3 и Conan 2.
+Требуются CMake 3.23+, компилятор C++20, Ninja, Python 3 и Conan 2.
 Установите инструменты и Conan в виртуальное окружение:
 
 ```bash
@@ -15,12 +15,16 @@ sudo apt-get install -y build-essential cmake ninja-build git ca-certificates \
   python3 python3-venv ccache clang-14 clang-format-14 clang-tidy-14
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install 'conan==2.34.0'
+python -m pip install 'conan==2.34.0' 'cmake==3.31.6'
 conan profile detect --force
 ```
 
 В новом терминале снова активируйте окружение: `source .venv/bin/activate`.
 Все последующие команды выполняются из корня репозитория.
+
+Conan создаёт `CMakeUserPresets.json` с версией формата 4, поэтому нужен
+CMake 3.23 или новее. В CI закреплён CMake 3.31.6; системного CMake 3.22
+из Ubuntu 22.04 недостаточно.
 
 ## Сборка как в CI
 
@@ -130,6 +134,9 @@ CI запускается на каждый push в любую ветку, вк�
 - `Lint`: проверка clang-format и clang-tidy для файлов из `src/` и `tests/`.
 - Артефакты `swarm-gcc-11` и `swarm-clang-14` содержат исполняемый файл `swarm`
   и хранятся 14 дней. После распаковки в Linux может потребоваться `chmod +x swarm`.
+
+После checkout каталог `$GITHUB_WORKSPACE` добавляется в Git `safe.directory`,
+чтобы команды Git работали внутри контейнера при другом владельце файлов.
 
 Кэши Conan и ccache разделены по компиляторам. Кэш ccache переиспользуется
 между коммитами; статистика видна в шаге `Show compiler cache statistics`.

@@ -19,6 +19,7 @@ defaults:
 env:
   DEBIAN_FRONTEND: noninteractive
   CONAN_VERSION: 2.34.0
+  CMAKE_VERSION: 3.31.6
   CONAN_HOME: ${{ github.workspace }}/.cache/conan2
   CCACHE_DIR: ${{ github.workspace }}/.cache/ccache
   CCACHE_BASEDIR: ${{ github.workspace }}
@@ -49,14 +50,20 @@ jobs:
         run: |
           apt-get update
           apt-get install -y --no-install-recommends \
-            ca-certificates git build-essential clang-14 cmake ninja-build \
+            ca-certificates git build-essential clang-14 ninja-build \
             ccache python3 python3-pip tar zstd
-          python3 -m pip install --no-cache-dir "conan==${CONAN_VERSION}"
+          python3 -m pip install --no-cache-dir \
+            "conan==${CONAN_VERSION}" "cmake==${CMAKE_VERSION}"
+          cmake --version
+          ctest --version
 
       - uses: actions/checkout@v6
         with:
           submodules: false
           persist-credentials: false
+
+      - name: Trust workspace
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       - name: Restore Conan cache
         uses: actions/cache@v5
@@ -119,13 +126,19 @@ jobs:
           apt-get update
           apt-get install -y --no-install-recommends \
             ca-certificates git build-essential clang-14 clang-format-14 \
-            clang-tidy-14 cmake ninja-build ccache python3 python3-pip tar zstd
-          python3 -m pip install --no-cache-dir "conan==${CONAN_VERSION}"
+            clang-tidy-14 ninja-build ccache python3 python3-pip tar zstd
+          python3 -m pip install --no-cache-dir \
+            "conan==${CONAN_VERSION}" "cmake==${CMAKE_VERSION}"
+          cmake --version
+          ctest --version
 
       - uses: actions/checkout@v6
         with:
           submodules: false
           persist-credentials: false
+
+      - name: Trust workspace
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       - name: Check formatting
         run: |

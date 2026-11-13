@@ -1,0 +1,7 @@
+[requires]
+cli11/2.7.2
+gtest/1.18.0
+
+[generators]
+CMakeDeps
+CMakeToolchain

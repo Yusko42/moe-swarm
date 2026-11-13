@@ -12,6 +12,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(SWARM_WERROR "Treat compiler warnings as errors" OFF)
 option(SWARM_BUILD_TESTS "Build tests" ON)
+option(SWARM_BUILD_LLAMA "Build llama.cpp tools" ON)
 
 if(MSVC)
     add_compile_options(/W4)
@@ -34,23 +35,27 @@ endif()
 #     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${cfg} "${CMAKE_BINARY_DIR}/bin")
 # endforeach()
 
-include(ExternalProject)
+if(SWARM_BUILD_LLAMA)
+    include(ExternalProject)
 
-set(LLAMA_CPP_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/llama")
-set(LLAMA_CPP_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/llama_cpp_build")
+    set(LLAMA_CPP_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/llama")
+    set(LLAMA_CPP_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/llama_cpp_build")
 
-ExternalProject_Add(llama_cpp_project
-    SOURCE_DIR          "${LLAMA_CPP_SOURCE_DIR}"
-    BINARY_DIR          "${LLAMA_CPP_BINARY_DIR}"
-    CMAKE_ARGS
-        -DCMAKE_BUILD_TYPE=Release
-        -DGGML_RPC=ON
-    UPDATE_COMMAND      ""
-    INSTALL_COMMAND     ""
-    BUILD_BYPRODUCTS
-        "${LLAMA_CPP_BINARY_DIR}/bin/llama-cli"
-        "${LLAMA_CPP_BINARY_DIR}/bin/rpc-server"
-)
+    ExternalProject_Add(llama_cpp_project
+        SOURCE_DIR          "${LLAMA_CPP_SOURCE_DIR}"
+        BINARY_DIR          "${LLAMA_CPP_BINARY_DIR}"
+        CMAKE_ARGS
+            -DCMAKE_BUILD_TYPE=Release
+            -DGGML_RPC=ON
+            -DCMAKE_CXX_COMPILER_LAUNCHER:STRING=${CMAKE_CXX_COMPILER_LAUNCHER}
+            -DCMAKE_C_COMPILER_LAUNCHER:STRING=${CMAKE_C_COMPILER_LAUNCHER}
+        UPDATE_COMMAND      ""
+        INSTALL_COMMAND     ""
+        BUILD_BYPRODUCTS
+            "${LLAMA_CPP_BINARY_DIR}/bin/llama-cli"
+            "${LLAMA_CPP_BINARY_DIR}/bin/rpc-server"
+    )
+endif()
 
 add_subdirectory(src ${CMAKE_CURRENT_BINARY_DIR}/bin)
 

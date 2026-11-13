@@ -44,7 +44,9 @@
       "inherits": "release",
       "cacheVariables": {
         "SWARM_WERROR": "ON",
-        "SWARM_BUILD_TESTS": "ON"
+        "SWARM_BUILD_TESTS": "ON",
+        "SWARM_BUILD_LLAMA": "OFF",
+        "CMAKE_CXX_COMPILER_LAUNCHER": "ccache"
       }
     }
   ],

@@ -1,0 +1,157 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  DEBIAN_FRONTEND: noninteractive
+  CONAN_VERSION: 2.34.0
+  CONAN_HOME: ${{ github.workspace }}/.cache/conan2
+  CCACHE_DIR: ${{ github.workspace }}/.cache/ccache
+  CCACHE_BASEDIR: ${{ github.workspace }}
+  CCACHE_COMPILERCHECK: content
+  CCACHE_MAXSIZE: 500M
+
+jobs:
+  build:
+    name: Build (${{ matrix.compiler }})
+    runs-on: ubuntu-22.04
+    container: ubuntu:22.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - compiler: gcc-11
+            cc: gcc-11
+            cxx: g++-11
+          - compiler: clang-14
+            cc: clang-14
+            cxx: clang++-14
+    env:
+      CC: ${{ matrix.cc }}
+      CXX: ${{ matrix.cxx }}
+    steps:
+      - name: Install tools
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            ca-certificates git build-essential clang-14 cmake ninja-build \
+            ccache python3 python3-pip tar zstd
+          python3 -m pip install --no-cache-dir "conan==${CONAN_VERSION}"
+
+      - uses: actions/checkout@v6
+        with:
+          submodules: false
+          persist-credentials: false
+
+      - name: Restore Conan cache
+        uses: actions/cache@v5
+        with:
+          path: ${{ env.CONAN_HOME }}
+          key: conan-v1-ubuntu22.04-${{ matrix.compiler }}-${{ env.CONAN_VERSION }}-${{ hashFiles('conanfile.txt') }}
+
+      - name: Restore compiler cache
+        uses: actions/cache@v5
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-v1-ubuntu22.04-${{ matrix.compiler }}-${{ hashFiles('conanfile.txt', 'CMakePresets.json') }}-${{ github.sha }}
+          restore-keys: |
+            ccache-v1-ubuntu22.04-${{ matrix.compiler }}-${{ hashFiles('conanfile.txt', 'CMakePresets.json') }}-
+            ccache-v1-ubuntu22.04-${{ matrix.compiler }}-
+
+      - name: Install dependencies
+        run: |
+          conan profile detect --force
+          conan install . -of=build/conan -s build_type=Release \
+            -s compiler.cppstd=20 --build=missing
+
+      - name: Configure
+        run: cmake --preset ci
+
+      - name: Build
+        run: |
+          ccache --zero-stats
+          cmake --build --preset ci --parallel 2
+
+      - name: Check version
+        run: ./build/bin/swarm --version
+
+      - name: Run tests
+        run: ctest --preset ci
+
+      - name: Show compiler cache statistics
+        if: always()
+        run: ccache --show-stats
+
+      - name: Upload swarm
+        uses: actions/upload-artifact@v4
+        with:
+          name: swarm-${{ matrix.compiler }}
+          path: build/bin/swarm
+          if-no-files-found: error
+          retention-days: 14
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-22.04
+    container: ubuntu:22.04
+    timeout-minutes: 30
+    env:
+      CC: clang-14
+      CXX: clang++-14
+    steps:
+      - name: Install tools
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            ca-certificates git build-essential clang-14 clang-format-14 \
+            clang-tidy-14 cmake ninja-build ccache python3 python3-pip tar zstd
+          python3 -m pip install --no-cache-dir "conan==${CONAN_VERSION}"
+
+      - uses: actions/checkout@v6
+        with:
+          submodules: false
+          persist-credentials: false
+
+      - name: Check formatting
+        run: |
+          git ls-files -z -- 'src/*.cpp' 'src/*.cc' 'src/*.cxx' \
+            'src/*.h' 'src/*.hh' 'src/*.hpp' 'src/*.hxx' \
+            'tests/*.cpp' 'tests/*.cc' 'tests/*.cxx' \
+            'tests/*.h' 'tests/*.hh' 'tests/*.hpp' 'tests/*.hxx' \
+            | xargs -0 -r clang-format-14 --dry-run --Werror --style=file
+
+      - name: Restore Conan cache
+        uses: actions/cache@v5
+        with:
+          path: ${{ env.CONAN_HOME }}
+          key: conan-v1-ubuntu22.04-clang-14-${{ env.CONAN_VERSION }}-${{ hashFiles('conanfile.txt') }}
+
+      - name: Install dependencies
+        run: |
+          conan profile detect --force
+          conan install . -of=build/conan -s build_type=Release \
+            -s compiler.cppstd=20 --build=missing
+
+      - name: Generate compilation database
+        run: cmake --preset ci
+
+      - name: Run clang-tidy
+        run: |
+          git ls-files -z -- 'src/*.cpp' 'src/*.cc' 'src/*.cxx' \
+            'tests/*.cpp' 'tests/*.cc' 'tests/*.cxx' \
+            | xargs -0 -r clang-tidy-14 -p build --warnings-as-errors='*'

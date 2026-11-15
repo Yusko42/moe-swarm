@@ -5,7 +5,7 @@
 
 namespace CLI {
 class App;
-}
+}  // namespace CLI
 
 namespace swarm::initiator {
 

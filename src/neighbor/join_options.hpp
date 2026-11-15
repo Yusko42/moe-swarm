@@ -1,4 +1,4 @@
-#pragma once
+#pragma once  // NOLINT(llvm-header-guard)
 
 #include <cstdint>
 #include <span>

@@ -42,7 +42,7 @@ std::optional<std::uint32_t> parse_ipv4(std::string_view input) {
             return std::nullopt;
         }
 
-        address = (address << 8) | *octet;
+        address = (address << 8U) | *octet;
         if (dot != std::string_view::npos) {
             input.remove_prefix(dot + 1);
         }

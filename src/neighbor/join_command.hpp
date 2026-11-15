@@ -1,4 +1,4 @@
-#pragma once
+#pragma once  // NOLINT(llvm-header-guard)
 
 #include "join_options.hpp"
 

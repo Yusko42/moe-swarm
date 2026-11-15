@@ -3,6 +3,8 @@
 #ifdef _WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
+
+// IP Helper declarations depend on the Winsock address types.
 #include <iphlpapi.h>
 #else
 #include <arpa/inet.h>

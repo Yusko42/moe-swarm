@@ -29,14 +29,14 @@ std::uint64_t available_ram_bytes() {
     }
 #else
     std::ifstream meminfo{"/proc/meminfo"};
-    std::string line;
+    std::string line{};
     while (std::getline(meminfo, line)) {
         if (!line.starts_with("MemAvailable:")) {
             continue;
         }
 
         std::istringstream field{line};
-        std::string name;
+        std::string name{};
         std::uint64_t kib = 0;
         if (field >> name >> kib) {
             return kib * 1024;

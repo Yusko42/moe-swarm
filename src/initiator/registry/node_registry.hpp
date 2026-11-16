@@ -6,6 +6,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "registry/rpc_state.hpp"
+
 namespace swarm::initiator {
 
 struct NodeRecord {
@@ -15,15 +17,19 @@ struct NodeRecord {
     std::string rpc_host;
     int rpc_port = 0;
     std::uint64_t memory_limit_bytes = 0;
-    std::string rpc_state = "stopped";
+    RpcState rpc_state = RpcState::Stopped;
     std::string last_deployment_id;
 };
 
 class NodeRegistry {
    public:
     NodeRegistry() = default;
+    ~NodeRegistry() = default;
+
     NodeRegistry(const NodeRegistry&) = delete;
     NodeRegistry& operator=(const NodeRegistry&) = delete;
+    NodeRegistry(NodeRegistry&&) = delete;
+    NodeRegistry& operator=(NodeRegistry&&) = delete;
 
     [[nodiscard]] const std::string& swarm_id() const { return swarm_id_; }
 
@@ -32,8 +38,7 @@ class NodeRegistry {
 
     std::optional<NodeRecord> find(const std::string& node_id) const;
 
-    bool update_rpc_state(const std::string& node_id, const std::string& state, const std::string& deployment_id,
-                          int port);
+    bool update_rpc_state(const std::string& node_id, RpcState state, const std::string& deployment_id, int port);
 
    private:
     mutable std::mutex mu_;

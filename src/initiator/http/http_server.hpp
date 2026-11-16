@@ -6,7 +6,7 @@
 
 namespace httplib {
 class Server;
-}
+}  // namespace httplib
 
 namespace swarm::initiator {
 
@@ -17,6 +17,8 @@ class HttpServer {
 
     HttpServer(const HttpServer&) = delete;
     HttpServer& operator=(const HttpServer&) = delete;
+    HttpServer(HttpServer&&) = delete;
+    HttpServer& operator=(HttpServer&&) = delete;
 
     // Пытается занять порт. Если port == 0 — ОС выберет свободный (для тестов).
     // Возвращает false, если порт занят или произошла ошибка bind.

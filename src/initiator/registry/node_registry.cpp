@@ -31,8 +31,8 @@ std::optional<NodeRecord> NodeRegistry::find(const std::string& node_id) const {
     return it->second;
 }
 
-bool NodeRegistry::update_rpc_state(const std::string& node_id, const std::string& state,
-                                    const std::string& deployment_id, int port) {
+bool NodeRegistry::update_rpc_state(const std::string& node_id, RpcState state, const std::string& deployment_id,
+                                    int port) {
     std::lock_guard lock{mu_};
     const auto it = by_node_id_.find(node_id);
     if (it == by_node_id_.end()) {
@@ -40,8 +40,8 @@ bool NodeRegistry::update_rpc_state(const std::string& node_id, const std::strin
     }
 
     NodeRecord& n = it->second;
-    const bool was_running = n.rpc_state == "running";
-    const bool is_running = state == "running";
+    const bool was_running = n.rpc_state == RpcState::Running;
+    const bool is_running = state == RpcState::Running;
 
     const bool meaningful_change =
         is_running && (!was_running || n.last_deployment_id != deployment_id || (port != 0 && n.rpc_port != port));
@@ -53,5 +53,4 @@ bool NodeRegistry::update_rpc_state(const std::string& node_id, const std::strin
     }
     return meaningful_change;
 }
-
 }  // namespace swarm::initiator

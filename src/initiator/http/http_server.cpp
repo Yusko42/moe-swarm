@@ -5,10 +5,13 @@
 #include <net/if.h>
 #include <netinet/in.h>
 
+#include <algorithm>
 #include <cstring>
 #include <iostream>
 #include <string_view>
 #include <vector>
+
+#include "registry/rpc_state.hpp"
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wall"
@@ -25,12 +28,7 @@ namespace {
 bool is_virtual_interface(std::string_view name) {
     static constexpr std::string_view kPrefixes[] = {"docker", "br-", "veth", "virbr",
                                                      "tun",    "tap", "amn",  "tailscale"};
-    for (const auto p : kPrefixes) {
-        if (name.starts_with(p)) {
-            return true;
-        }
-    }
-    return false;
+    return std::ranges::any_of(kPrefixes, [name](std::string_view prefix) { return name.starts_with(prefix); });
 }
 
 std::string detect_lan_ip() {
@@ -55,8 +53,9 @@ std::string detect_lan_ip() {
         }
 
         char buf[INET_ADDRSTRLEN] = {};
-        const auto* sin = reinterpret_cast<const sockaddr_in*>(it->ifa_addr);
-        if (::inet_ntop(AF_INET, &sin->sin_addr, buf, sizeof(buf)) != nullptr) {
+        sockaddr_in sin{};
+        std::memcpy(&sin, it->ifa_addr, sizeof(sin));
+        if (::inet_ntop(AF_INET, &sin.sin_addr, buf, sizeof(buf)) != nullptr) {
             result = buf;
             break;
         }
@@ -164,11 +163,12 @@ void HttpServer::setup_routes() {
             return;
         }
 
-        std::string state;
+        RpcState state = RpcState::Stopped;
         std::string deployment_id;
         int port = 0;
         if (body.contains("rpc") && body["rpc"].is_object()) {
-            state = body["rpc"].value("state", "stopped");
+            const auto state_str = body["rpc"].value("state", "stopped");
+            state = parse_rpc_state(state_str).value_or(RpcState::Stopped);
             deployment_id = body["rpc"].value("deployment_id", "");
             port = body["rpc"].value("port", 0);
         }

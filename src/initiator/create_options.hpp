@@ -10,15 +10,15 @@
 namespace swarm::initiator {
 
 struct CreateArguments {
-    std::string_view model;
-    std::string_view memory;
-    std::optional<std::string_view> port;
+    std::string_view model{};
+    std::string_view memory{};
+    std::optional<std::string_view> port{};
 };
 
 struct CreateOptions {
-    std::filesystem::path model_path;
-    unsigned int memory_gib;
-    std::uint16_t port;
+    std::filesystem::path model_path{};
+    unsigned int memory_gib{};
+    std::uint16_t port{};
 };
 
 using CreateResult = std::variant<CreateOptions, std::string>;

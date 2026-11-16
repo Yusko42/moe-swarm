@@ -11,10 +11,10 @@ NodeRecord NodeRegistry::join(const std::string& agent_instance_id, const std::s
     }
 
     NodeRecord rec;
-    rec.node_id            = "n" + std::to_string(next_id_++);
-    rec.agent_instance_id  = agent_instance_id;
-    rec.name               = name;
-    rec.rpc_host           = rpc_host;
+    rec.node_id = "n" + std::to_string(next_id_++);
+    rec.agent_instance_id = agent_instance_id;
+    rec.name = name;
+    rec.rpc_host = rpc_host;
     rec.memory_limit_bytes = memory_limit_bytes;
 
     by_node_id_.emplace(rec.node_id, rec);
@@ -43,11 +43,11 @@ bool NodeRegistry::update_rpc_state(const std::string& node_id, const std::strin
     const bool was_running = n.rpc_state == "running";
     const bool is_running = state == "running";
 
-    const bool meaningful_change = is_running && (!was_running || n.last_deployment_id != deployment_id ||
-                                                  (port != 0 && n.rpc_port != port));
+    const bool meaningful_change =
+        is_running && (!was_running || n.last_deployment_id != deployment_id || (port != 0 && n.rpc_port != port));
 
-    n.rpc_state            = state;
-    n.last_deployment_id   = deployment_id;
+    n.rpc_state = state;
+    n.last_deployment_id = deployment_id;
     if (port != 0) {
         n.rpc_port = port;
     }

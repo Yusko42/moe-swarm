@@ -15,6 +15,7 @@
 #pragma GCC diagnostic ignored "-Wextra"
 #pragma GCC diagnostic ignored "-Wpedantic"
 #include <httplib.h>
+
 #include <nlohmann/json.hpp>
 #pragma GCC diagnostic pop
 
@@ -22,8 +23,8 @@ namespace swarm::initiator {
 namespace {
 
 bool is_virtual_interface(std::string_view name) {
-    static constexpr std::string_view kPrefixes[] = {"docker", "br-",   "veth", "virbr",
-                                                     "tun",    "tap",   "amn",  "tailscale"};
+    static constexpr std::string_view kPrefixes[] = {"docker", "br-", "veth", "virbr",
+                                                     "tun",    "tap", "amn",  "tailscale"};
     for (const auto p : kPrefixes) {
         if (name.starts_with(p)) {
             return true;
@@ -69,21 +70,19 @@ std::string detect_lan_ip() {
 HttpServer::HttpServer(NodeRegistry& registry, int port)
     : registry_(registry), port_(port), srv_(new httplib::Server()) {}
 
-HttpServer::~HttpServer() {
-    delete srv_;
-}
+HttpServer::~HttpServer() { delete srv_; }
 
 bool HttpServer::bind() {
     // httplib по умолчанию ставит SO_REUSEPORT|SO_REUSEADDR, если ОС позволяет
     // Оставляем только ReuseAddr: bind на активный LISTEN теперь вернёт ошибку
-    // Проверка на основе кода из README httplib 
+    // Проверка на основе кода из README httplib
     srv_->set_socket_options([](socket_t sock) {
 #ifdef _WIN32
-    httplib::set_socket_opt(sock, SOL_SOCKET, SO_EXCLUSIVEADDRUSE, 1);
+        httplib::set_socket_opt(sock, SOL_SOCKET, SO_EXCLUSIVEADDRUSE, 1);
 #else
-    httplib::set_socket_opt(sock, SOL_SOCKET, SO_REUSEADDR, 1);
+        httplib::set_socket_opt(sock, SOL_SOCKET, SO_REUSEADDR, 1);
 #endif
-});
+    });
 
     if (port_ == 0) {
         const int p = srv_->bind_to_any_port("0.0.0.0");
@@ -120,9 +119,9 @@ void HttpServer::setup_routes() {
         }
 
         const std::string agent_instance_id = body.value("agent_instance_id", "");
-        const std::string name              = body.value("name", "");
-        const std::string rpc_host          = body.value("rpc_host", "");
-        const std::uint64_t memory_limit    = body.value("memory_limit_bytes", 0ULL);
+        const std::string name = body.value("name", "");
+        const std::string rpc_host = body.value("rpc_host", "");
+        const std::uint64_t memory_limit = body.value("memory_limit_bytes", 0ULL);
 
         if (agent_instance_id.empty() || name.empty()) {
             res.status = 400;
@@ -167,11 +166,11 @@ void HttpServer::setup_routes() {
 
         std::string state;
         std::string deployment_id;
-        int         port = 0;
+        int port = 0;
         if (body.contains("rpc") && body["rpc"].is_object()) {
-            state         = body["rpc"].value("state", "stopped");
+            state = body["rpc"].value("state", "stopped");
             deployment_id = body["rpc"].value("deployment_id", "");
-            port          = body["rpc"].value("port", 0);
+            port = body["rpc"].value("port", 0);
         }
 
         const bool meaningful = registry_.update_rpc_state(node_id, state, deployment_id, port);

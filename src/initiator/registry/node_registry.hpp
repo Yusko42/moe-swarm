@@ -9,18 +9,18 @@
 namespace swarm::initiator {
 
 struct NodeRecord {
-    std::string   node_id;
-    std::string   agent_instance_id;
-    std::string   name;
-    std::string   rpc_host;
-    int           rpc_port = 0;
+    std::string node_id;
+    std::string agent_instance_id;
+    std::string name;
+    std::string rpc_host;
+    int rpc_port = 0;
     std::uint64_t memory_limit_bytes = 0;
-    std::string   rpc_state = "stopped";
-    std::string   last_deployment_id;
+    std::string rpc_state = "stopped";
+    std::string last_deployment_id;
 };
 
 class NodeRegistry {
-public:
+   public:
     NodeRegistry() = default;
     NodeRegistry(const NodeRegistry&) = delete;
     NodeRegistry& operator=(const NodeRegistry&) = delete;
@@ -35,7 +35,7 @@ public:
     bool update_rpc_state(const std::string& node_id, const std::string& state, const std::string& deployment_id,
                           int port);
 
-private:
+   private:
     mutable std::mutex mu_;
     std::unordered_map<std::string, NodeRecord> by_node_id_;
     std::unordered_map<std::string, std::string> agent_to_node_;

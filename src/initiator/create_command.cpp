@@ -1,4 +1,6 @@
 #include "create_command.hpp"
+#include "http/http_server.hpp"
+#include "registry/node_registry.hpp"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -65,9 +67,22 @@ int run_create(const CreateCliArguments& args) {
     }
 
     const auto& options = std::get<CreateOptions>(result);
-    std::cout << "Файл модели: " << args.model << '\n';
-    std::cout << "Память: " << options.memory_gib << " ГБ\n";
-    std::cout << "Порт: " << options.port << '\n';
+
+#ifndef NDEBUG
+    std::clog << "Файл модели: " << args.model << '\n';
+    std::clog << "Память: " << options.memory_gib << " ГБ\n";
+    std::clog << "Порт: " << options.port << '\n';
+#endif
+
+    swarm::initiator::NodeRegistry registry;
+    swarm::initiator::HttpServer server{registry, options.port};
+    if (!server.bind()) {
+        std::cerr << "Порт " << options.port << " занят. Укажите другой параметром --port\n";
+        return EXIT_FAILURE;
+    }
+    std::cout << "Рой создан. Адрес: " << server.address() << std::endl;
+    server.run();
+
     return EXIT_SUCCESS;
 }
 

@@ -5,6 +5,7 @@
 #include <string>
 
 #include "join_command.hpp"
+#include "model_profile_cli.hpp"
 
 int main(int argc, char** argv) {
     try {
@@ -21,6 +22,16 @@ int main(int argc, char** argv) {
         auto* create = app.add_subcommand("create", "Create a swarm");
         create->allow_extras();
 
+        swarm::ProfileOptions options;
+        auto* profile = app.add_subcommand("model-profile", "Inspect GGUF headers and estimate node RAM (F16 KV)");
+        profile->add_option("file", options.file, "GGUF file")->required();
+        profile->add_option("--placement", options.placement, "Node placement file; memory parameters in bytes");
+        profile->add_option("--context", options.context, "KV context tokens")->check(CLI::PositiveNumber);
+        profile->add_flag("--tensors", options.tensors, "Print tensor descriptors");
+        profile->add_flag("--header-only", options.header_only, "Inspect without attention/RAM profiling");
+        profile->add_flag("--bytes", options.bytes, "Print node table in exact bytes instead of MiB");
+        profile->callback([&] { swarm::print_model_profile(options); });
+
         try {
             app.parse(argc, argv);
         } catch (const CLI::ArgumentMismatch& error) {
@@ -30,6 +41,9 @@ int main(int argc, char** argv) {
             }
             return app.exit(error);
         } catch (const CLI::RequiredError& error) {
+            if (profile->parsed()) {
+                return app.exit(error);
+            }
             if (argc > 1) {
                 std::cerr << "Неизвестная команда: " << argv[1] << '\n';
                 return EXIT_FAILURE;
@@ -37,6 +51,10 @@ int main(int argc, char** argv) {
             return app.exit(error);
         } catch (const CLI::ParseError& error) {
             return app.exit(error);
+        }
+
+        if (profile->parsed()) {
+            return EXIT_SUCCESS;
         }
 
         if (join->parsed()) {

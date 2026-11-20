@@ -1,6 +1,8 @@
 [requires]
 cli11/2.7.2
 gtest/1.18.0
+cpp-httplib/0.65.0
+nlohmann_json/3.12.0
 
 [generators]
 CMakeDeps

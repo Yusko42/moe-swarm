@@ -1,0 +1,41 @@
+{
+  "schema_version": "0.1",
+  "stand_id": "TODO",
+  "created_utc": "TODO (ISO-8601)",
+  "moe_swarm": {
+    "git_commit": "TODO",
+    "build_id": "TODO"
+  },
+  "llama_server": {
+    "version_or_commit": "TODO",
+    "binary_sha256": "TODO",
+    "startup_command_redacted": "TODO"
+  },
+  "model": {
+    "name": "Qwen3-30B-A3B",
+    "quantization": "Q3_K_M",
+    "filename": "TODO (exact file)",
+    "sha256": "TODO",
+    "bytes": null,
+    "chat_template_id": "TODO",
+    "thinking_switch": "TODO"
+  },
+  "run_configuration": {
+    "context_size_tokens": 8192,
+    "max_new_tokens": 256,
+    "temperature": 0,
+    "seed": null,
+    "cache_profile": "COLD_PROMPT",
+    "threads": null,
+    "threads_batch": null,
+    "max_parallel_responses": 1,
+    "kv_cache_type": "FP16",
+    "cpu_only": true
+  },
+  "nodes": [
+    {"id": "PC-1", "role": "initiator", "cpu": "TODO", "os": "TODO", "ram_installed_gb": 8, "ram_allocated_to_swarm_gb": 6, "ram_type": "TODO", "ram_mts": null, "ram_channels": "TODO", "ssd": "TODO", "ethernet_link_mbps": null, "cgroup_path": "TODO or N/A"},
+    {"id": "PC-2", "role": "neighbor", "cpu": "TODO", "os": "TODO", "ram_installed_gb": 8, "ram_allocated_to_swarm_gb": 6, "ram_type": "TODO", "ram_mts": null, "ram_channels": "TODO", "ssd": "TODO", "ethernet_link_mbps": null, "cgroup_path": "TODO or N/A"},
+    {"id": "PC-3", "role": "neighbor", "cpu": "TODO", "os": "TODO", "ram_installed_gb": 8, "ram_allocated_to_swarm_gb": 6, "ram_type": "TODO", "ram_mts": null, "ram_channels": "TODO", "ssd": "TODO", "ethernet_link_mbps": null, "cgroup_path": "TODO or N/A"}
+  ],
+  "notes": "Template only; no real machine information has been collected. RAM quantities are target values, not hardware attestations."
+}

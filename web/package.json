@@ -1,0 +1,30 @@
+{
+  "name": "swarm-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.22.1 <25"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:ui": "playwright test"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.65.1",
+    "@types/node": "24.19.2",
+    "eslint": "10.15.0",
+    "jsdom": "27.4.0",
+    "prettier": "3.10.1",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.72.2",
+    "vite": "8.3.8",
+    "vitest": "4.1.12"
+  }
+}

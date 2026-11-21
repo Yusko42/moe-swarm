@@ -36,13 +36,9 @@ function(swarm_add_test)
     )
 endfunction()
 
-swarm_add_test(
-        NAME dummy-test
-        SOURCES dummy-test.cpp
-)
-
-swarm_add_test(
-        NAME join-options-test
-        SOURCES join-options-test.cpp
-        LIBS neighbor
-)
+add_subdirectory(unit)
+add_subdirectory(integration)
+add_subdirectory(property)
+add_subdirectory(fault)
+add_subdirectory(systemd)
+add_subdirectory(fuzz)

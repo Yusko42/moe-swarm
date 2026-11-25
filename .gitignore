@@ -71,3 +71,7 @@ Testing/
 .vscode/
 .venv/
 CMakeUserPresets.json
+
+# Model weights
+/models
+*.gguf

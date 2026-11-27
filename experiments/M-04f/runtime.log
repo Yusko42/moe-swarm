@@ -1,0 +1,79 @@
+
+[measurement.log]
+0.00.240.300 I common_memory_breakdown_print: | memory breakdown [MiB] | total   free    self   model   context   compute    unaccounted |
+0.00.439.682 I load_tensors: offloading 0 repeating layers to GPU
+0.00.439.712 I load_tensors: offloaded 0/29 layers to GPU
+0.01.254.577 I srv  server_on_li: listening on http://127.0.0.1:36977
+0.01.254.689 I srv  update_slots: all slots are idle
+0.01.310.848 I srv  update_slots: all slots are idle
+0.29.604.357 I slot      release: id  0 | task 1 | stop processing: n_tokens = 251, truncated = 0
+0.29.604.367 I srv  update_slots: all slots are idle
+0.30.626.890 I slot      release: id  0 | task 130 | stop processing: n_tokens = 132, truncated = 0
+0.30.626.901 I srv  update_slots: all slots are idle
+0.31.802.804 W srv          stop: cancel task, id_task = 139
+0.31.927.068 I slot      release: id  0 | task 139 | stop processing: n_tokens = 133, truncated = 0
+0.31.927.106 I srv  update_slots: all slots are idle
+0.31.935.201 I srv  update_slots: all slots are idle
+0.32.984.254 I slot      release: id  0 | task 177 | stop processing: n_tokens = 132, truncated = 0
+0.32.984.263 I srv  update_slots: all slots are idle
+0.34.140.451 W srv          stop: cancel task, id_task = 186
+0.34.277.636 I slot      release: id  0 | task 186 | stop processing: n_tokens = 133, truncated = 0
+0.34.277.671 I srv  update_slots: all slots are idle
+0.34.285.151 I srv  update_slots: all slots are idle
+0.35.279.803 I slot      release: id  0 | task 225 | stop processing: n_tokens = 132, truncated = 0
+0.35.279.812 I srv  update_slots: all slots are idle
+0.36.494.739 W srv          stop: cancel task, id_task = 234
+0.36.615.939 I slot      release: id  0 | task 234 | stop processing: n_tokens = 133, truncated = 0
+0.36.615.979 I srv  update_slots: all slots are idle
+0.36.617.084 I srv  update_slots: all slots are idle
+0.37.639.274 I slot      release: id  0 | task 271 | stop processing: n_tokens = 132, truncated = 0
+0.37.639.285 I srv  update_slots: all slots are idle
+0.37.640.952 I common_memory_breakdown_print: | memory breakdown [MiB] | total   free    self   model   context   compute    unaccounted |
+
+[normal.log]
+0.00.269.393 I common_memory_breakdown_print: | memory breakdown [MiB] | total   free    self   model   context   compute    unaccounted |
+0.00.531.162 I load_tensors: offloading 0 repeating layers to GPU
+0.00.531.198 I load_tensors: offloaded 0/29 layers to GPU
+0.01.760.774 I srv  server_on_li: listening on http://127.0.0.1:52473
+0.01.760.968 I srv  update_slots: all slots are idle
+0.14.213.607 I slot      release: id  0 | task 0 | stop processing: n_tokens = 131, truncated = 0
+0.14.213.618 I srv  update_slots: all slots are idle
+0.14.215.547 I common_memory_breakdown_print: | memory breakdown [MiB] | total   free    self   model   context   compute    unaccounted |
+
+[rpc-client.log]
+0.00.014.739 I cmn  common_param:   - RPC0    : 127.0.0.1:36087 (15909 MiB, 15909 MiB free)
+0.00.294.210 I common_memory_breakdown_print: | memory breakdown [MiB]     | total    free    self   model   context   compute    unaccounted |
+0.00.294.233 I common_memory_breakdown_print: |   - RPC0 (127.0.0.1:36087) | 15909 = 15909 + ( 820 =   325 +     478 +      17) +        -820 |
+0.00.372.035 I llama_prepare_model_devices: using device RPC0 (127.0.0.1:36087) (unknown id) - 15909 MiB free
+0.00.551.856 I load_tensors: offloading output layer to GPU
+0.00.551.881 I load_tensors: offloading 27 repeating layers to GPU
+0.00.551.882 I load_tensors: offloaded 29/29 layers to GPU
+0.00.551.887 I load_tensors: RPC0[127.0.0.1:36087] model buffer size =   325.37 MiB
+0.01.326.483 I llama_kv_cache: RPC0[127.0.0.1:36087] KV buffer size =   476.00 MiB
+0.01.664.043 I init_rotation: RPC0[127.0.0.1:36087] rotation buffer size =     2.19 MiB
+0.01.681.233 I sched_reserve: RPC0[127.0.0.1:36087] compute buffer size =    17.01 MiB
+0.02.176.099 I srv  server_on_li: listening on http://127.0.0.1:37567
+0.02.176.231 I srv  update_slots: all slots are idle
+0.14.553.034 I slot      release: id  0 | task 0 | stop processing: n_tokens = 131, truncated = 0
+0.14.553.044 I srv  update_slots: all slots are idle
+0.14.554.811 I common_memory_breakdown_print: | memory breakdown [MiB]     | total    free    self   model   context   compute    unaccounted |
+0.14.554.829 I common_memory_breakdown_print: |   - RPC0 (127.0.0.1:36087) | 15909 = 15909 + ( 820 =   325 +     478 +      17) +        -820 |
+
+[rpc.log]
+Starting RPC server v8.0.1
+  local cache    : n/a
+  transport      : TCP
+Accepted client connection
+Accepted client connection
+Accepted client connection
+Accepted client connection
+Accepted client connection
+Accepted client connection
+Accepted client connection
+Accepted client connection
+Accepted client connection
+Accepted client connection
+Accepted client connection
+Accepted client connection
+Accepted client connection
+Accepted client connection

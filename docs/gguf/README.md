@@ -17,7 +17,9 @@
 | Файл | Назначение |
 |---|---|
 | [model_profile.hpp](../../src/initiator/model_profile/model_profile.hpp) | Структуры данных и интерфейс расчёта |
-| [model_profile.cpp](../../src/initiator/model_profile/model_profile.cpp) | Разбор GGUF, размеры тензоров, группировка, KV и память узлов |
+| [gguf_reader.hpp](../../src/initiator/model_profile/gguf_reader/gguf_reader.hpp) | Метаданные, описания тензоров и интерфейс ридера |
+| [gguf_reader.cpp](../../src/initiator/model_profile/gguf_reader/gguf_reader.cpp) | Разбор GGUF, выравнивание и размеры тензоров |
+| [model_profile.cpp](../../src/initiator/model_profile/model_profile.cpp) | Группировка весов, KV и память узлов |
 | [model_profile_cli.hpp](../../src/initiator/model_profile/model_profile_cli.hpp) | Параметры командного запуска |
 | [model_profile_cli.cpp](../../src/initiator/model_profile/model_profile_cli.cpp) | Чтение файла раскладки и вывод таблицы |
 | [CMakeLists.txt](../../src/initiator/model_profile/CMakeLists.txt) | Библиотека `model_profile` для CMake |
@@ -42,8 +44,11 @@
 размеры массива. Например, `[256, 3]` означает три строки по 256 чисел
 в порядке размерностей GGML.
 
-Значения полей, нужных для расчёта, сохраняются. Большие поля токенизатора
-можно пропустить. После описаний тензоров вычисляется начало секции данных
+Сохраняются все ключи и значения, включая строки токенизатора, знаковые
+и беззнаковые целые, float32/float64, логические значения и массивы.
+Типизированное представление и ограничения описаны в
+[контракте ридера](../../src/initiator/model_profile/gguf_reader/README.md).
+После описаний тензоров вычисляется начало секции данных
 с учётом выравнивания; по умолчанию оно равно 32 байтам.
 
 **Сами веса не читаются и не отображаются в память.** Для проверки смещений

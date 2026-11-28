@@ -10,6 +10,7 @@ add_library(initiator STATIC
 )
 target_include_directories(initiator PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 target_link_libraries(initiator
+    PUBLIC swarm::types
     PRIVATE CLI11::CLI11
             httplib::httplib
             nlohmann_json::nlohmann_json

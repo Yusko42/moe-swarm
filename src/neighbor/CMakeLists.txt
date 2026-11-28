@@ -1,5 +1,6 @@
 add_library(neighbor STATIC join_options.cpp join_command.cpp)
 target_include_directories(neighbor PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+target_link_libraries(neighbor PUBLIC swarm::types)
 
 if(WIN32)
     target_link_libraries(neighbor PRIVATE iphlpapi ws2_32)

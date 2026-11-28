@@ -14,3 +14,5 @@ target_link_libraries(initiator
             httplib::httplib
             nlohmann_json::nlohmann_json
 )
+
+add_subdirectory(model_profile)
